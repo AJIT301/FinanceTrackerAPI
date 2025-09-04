@@ -1,27 +1,26 @@
-# backend/app/main.py
-from fastapi import FastAPI
+# backend/app/main.pyfrom fastapi.middleware.cors import CORSMiddleware
+
+
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.tracker.routes import router as tracker
+import os
+from fastapi import FastAPI
+
+
+from app.core.config import settings
 
 def create_app():
     # Create the FastAPI app instance
-    app = FastAPI(
-        title="LifeSync Personal Finance Tracker API",
-        description="API for managing personal finances, transactions, and budgets.",
-        version="0.0.1",
-    )
+    app = FastAPI(title="FinanceTracker API")
 
-    # --- Middleware Configuration ---
-
-    # Configure CORS to allow your React frontend (running on Vite's default port)
-    # Adjust the origin list as needed for development/production
+# --- Middleware Configuration ---
+# Load allowed origins from .env (comma-separated string → list)
     app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], # Add your frontend URL(s)
-        allow_credentials=True,
-        allow_methods=["*"], # Allow all methods (GET, POST, PUT, DELETE, etc.)
-        allow_headers=["*"], # Allow all headers
-    )
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
     # --- Routes / Endpoints ---
 
@@ -51,11 +50,10 @@ app = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    import os
-
-    # Get host and port from environment variables or use defaults
-    host = os.getenv("HOST", "127.0.0.1") # Use 0.0.0.0 if you need external access
-    port = int(os.getenv("PORT", 8001))   # Use a port other than 8000 if needed
-
-    print(f"Starting LifeSync Finance API on http://{host}:{port}")
-    uvicorn.run("app.main:app", host=host, port=port, reload=True) # reload=True for development
+    uvicorn.run(
+        "app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.RELOAD,
+        log_level=settings.LOG_LEVEL,
+    )

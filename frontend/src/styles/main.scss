@@ -1,0 +1,53 @@
+// src/styles/main.scss
+// Your main.scss should now be purely global/base stuff: resets, fonts, variables, mixins, utilities. Example:
+/* main.scss */
+@use 'variables'; // Imports src/styles/_variables.scss
+@use 'mixins';    // Imports src/styles/_mixins.scss
+
+/* 2. CSS Reset / Normalize */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 3. Global typography */
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #f9f9f9;
+    color: #111;
+}
+
+/* 4. Global links/buttons */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font: inherit;
+}
+
+/* 5. Utility classes */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* 6. Mixins */
+@mixin card-style {
+    border: 1px solid #ddd;
+    border-radius: $border-radius;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}

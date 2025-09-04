@@ -1,0 +1,57 @@
+/* app.scss */
+@import './main.scss';
+/* App-level wrapper */
+
+.app {
+    font-family: $font-family;
+    text-align: center;
+    padding: 20px;
+
+    h1 {
+        color: $primary;
+        margin-bottom: 15px;
+    }
+
+    p {
+        color: #555;
+        font-size: 1.1em;
+    }
+
+    .highlight {
+        background-color: $secondary;
+        color: white;
+        padding: 5px 10px;
+        border-radius: $border-radius;
+    }
+
+    button {
+        background-color: $primary;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: $border-radius;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: darken($primary, 10%);
+        }
+
+        &:focus {
+            outline: 2px solid lighten($primary, 20%);
+        }
+    }
+}
+
+/* Shared cards used inside App */
+.card {
+    @include card-style;
+    margin: 20px auto;
+    max-width: 400px;
+
+    h2 {
+        margin-top: 0;
+        color: $primary;
+    }
+}
