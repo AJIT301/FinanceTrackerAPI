@@ -1,31 +1,59 @@
 // src/styles/main.scss
-// Your main.scss should now be purely global/base stuff: resets, fonts, variables, mixins, utilities. Example:
-/* main.scss */
-@use 'variables'; // Imports src/styles/_variables.scss
-@use 'mixins';    // Imports src/styles/_mixins.scss
+@use 'variables' as *;
+@use 'mixins' as *;
 
-/* 2. CSS Reset / Normalize */
+/* 1. CSS Reset */
 *,
 *::before,
 *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
 }
 
-/* 3. Global typography */
+/* 2. Prevent scrollbar issues */
+html,
 body {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    background-color: #f9f9f9;
-    color: #111;
+    height: 100%;
+    overflow: hidden;
+    // Add mobile viewport handling
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+
 }
 
-/* 4. Global links/buttons */
+/* 3. Global typography with mobile-first approach */
+body {
+    font-family: $font-family;
+    line-height: 1.5;
+    color: #111;
+    // Prevent horizontal scrolling on mobile
+    overflow-x: hidden;
+    // Better font rendering
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 4. Root element - ensure full height */
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+/* 5. Global links/buttons */
 a {
     text-decoration: none;
     color: inherit;
+
+    // Better touch targets on mobile
+    @include responsive(phone) {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 button {
@@ -33,21 +61,68 @@ button {
     border: none;
     background: none;
     font: inherit;
+
+    // Better touch targets on mobile
+    @include responsive(phone) {
+        min-height: 44px;
+        padding: $spacing-sm $spacing-md;
+    }
 }
 
-/* 5. Utility classes */
+/* 6. Utility classes */
 .container {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 $spacing-md;
+
+    @include responsive(phone) {
+        padding: 0 $spacing-sm;
+    }
 }
 
-/* 6. Mixins */
-@mixin card-style {
-    border: 1px solid #ddd;
-    border-radius: $border-radius;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+/* 7. Mobile-specific improvements */
+@include responsive(phone) {
+
+    // Prevent zoom on input focus
+    input,
+    textarea,
+    select {
+        font-size: 16px;
+    }
+
+    // Better touch scrolling
+    * {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    // Main content adjustments for mobile
+    .main-content {
+        display: flex;
+        flex-direction: column; // only for phones
+        align-items: center;
+        justify-content: flex-start;
+        width: 100vw;
+        max-width: 100vw;
+        min-height: 100vh;
+        padding: 0;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .auth-container {
+        width: 100%;
+        max-width: 500px;
+        margin: 0;
+        padding: 15px 25px; // minimal padding
+        border-radius: 16px;
+        gap: 5px;
+        box-sizing: border-box;
+        flex-grow: 1; // <-- this makes it stretch to fill remaining space
+        display: flex;
+        flex-direction: column;
+        justify-content: center; 
+        box-sizing: border-box;
+
+    }
 }

@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from app.api.tracker.routes import router as tracker_router
 from app.core.config import settings
 
+from app.api.auth import router as auth_router
 # Test request model
 class TestRequest(BaseModel):
     test: str
@@ -26,7 +27,8 @@ def create_app():
     )
 
     # --- Routes / Endpoints ---
-
+        # Include routers
+    app.include_router(auth_router)  # Add this line
     # Basic health check endpoint
     @app.get("/", tags=["Health"])
     async def root():

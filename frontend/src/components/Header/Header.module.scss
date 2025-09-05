@@ -1,20 +1,231 @@
-
-//header.module.scss
-
+// src/components/Header/Header.module.scss
 @use '../../styles/variables' as *;
 
 .header {
-    padding: 20px;
-    background-color: $primary;
+    // Fixed height to prevent scroll issues
+    height: 70px; // Explicit height
+    flex-shrink: 0; // Prevent shrinking
+
+    // Enhanced glass effect
+    background: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
+
+    // Ensure it stays on top
+    position: relative;
+    z-index: 1000;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%; // Take full header height
+}
+
+.brand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
 }
 
 .title {
-    font-size: 2rem;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(135deg, #fff 0%, #e0f7fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .subtitle {
-    font-size: 1rem;
-    color: #eee;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-weight: 300;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navLink {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-2px);
+    }
+}
+
+.navLink.primary {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+}
+
+.userMenu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.userName {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+.logoutBtn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+    }
+}
+
+.authLinks {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Mobile Styles */
+.menuButton {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+
+    span {
+        width: 25px;
+        height: 3px;
+        background: white;
+        margin: 3px 0;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+}
+
+.mobileNav {
+    display: none;
+    flex-direction: column;
+    background: rgba(45, 55, 72, 0.98);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobileNavLink {
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+    font-weight: 500;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.mobileLogoutBtn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: 500;
+    margin-top: 1rem;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header {
+        height: 60px; // Slightly smaller on mobile
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .menuButton {
+        display: flex;
+    }
+
+    .mobileNav {
+        display: flex;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .brand {
+        gap: 0.3rem;
+    }
+}
+
+/* Animation for mobile menu */
+.menuButton.active {
+    span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    span:nth-child(2) {
+        opacity: 0;
+    }
+
+    span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+}
+
+/* Ensure no overflow from header */
+.header,
+.header * {
+    box-sizing: border-box;
+    overflow: visible;
 }
