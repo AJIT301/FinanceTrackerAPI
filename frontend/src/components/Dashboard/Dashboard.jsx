@@ -23,12 +23,12 @@ export default function Dashboard() {
             setLoading(true);
 
             // Fetch recent transactions
-            const transactionsResponse = await apiRequest('/transactions?limit=5');
+            const transactionsResponse = await apiRequest('/api/transactions?limit=5');
             const transactionsData = await transactionsResponse.json();
             setTransactions(transactionsData.transactions || []);
 
             // Fetch financial stats
-            const statsResponse = await apiRequest('/transactions/summary');
+            const statsResponse = await apiRequest('/api/transactions/summary');
             const statsData = await statsResponse.json();
             setStats(statsData);
 
