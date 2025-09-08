@@ -1,0 +1,98 @@
+🚀 Alembic Migration Cheat Sheet
+🔧 Basic Commands
+bash
+# Initialize Alembic (first time setup)
+alembic init alembic
+
+# Create a new migration
+alembic revision -m "description_of_changes"
+
+# Create migration with autogenerate (from model changes)
+alembic revision --autogenerate -m "description"
+
+# Apply all pending migrations
+alembic upgrade head
+
+# Apply to specific revision
+alembic upgrade <revision_hash>
+
+# Rollback one migration
+alembic downgrade -1
+
+# Rollback to specific revision
+alembic downgrade <revision_hash>
+
+# Rollback all migrations
+alembic downgrade base
+📊 Status & Info Commands
+bash
+# Show current migration version
+alembic current
+
+# Show migration history
+alembic history
+
+# Show all migration heads
+alembic heads
+
+# Show all branches
+alembic branches
+🔍 Inspection Commands
+bash
+# Show SQL for specific migration (dry run)
+alembic upgrade <revision> --sql
+
+# Show current state
+alembic show <revision>
+
+# Check if database is up to date
+alembic check
+🛠️ Advanced Commands
+bash
+# Stamp database as specific version (without running migrations)
+alembic stamp <revision>
+
+# Run migration in offline mode (generate SQL only)
+alembic upgrade head --sql
+
+# Force specific revision as current
+alembic stamp head
+📝 Common Workflow
+bash
+# 1. Make changes to your models
+# 2. Generate migration
+alembic revision --autogenerate -m "add_new_feature"
+
+# 3. Review generated migration file
+# 4. Apply migration
+alembic upgrade head
+
+# 5. Verify
+alembic current
+⚠️ Troubleshooting
+bash
+# If autogenerate doesn't detect changes
+alembic revision --autogenerate -m "changes" --verbose
+
+# If getting "target database not up to date"
+alembic upgrade head  # Apply pending migrations first
+
+# If migration fails, check specific revision
+alembic show <revision_hash>
+🔐 Production Tips
+bash
+# Always test migrations first
+alembic upgrade head --sql > migration_preview.sql
+
+# Use transactions for safety (default in PostgreSQL)
+alembic upgrade head --transaction-per-migration
+
+# Backup before major migrations
+pg_dump your_database > backup.sql
+📁 File Structure
+text
+alembic/
+├── env.py              # Configuration
+├── script.py.mako      # Migration template
+└── versions/           # Migration files
+    └── 123abc_initial_migration.py

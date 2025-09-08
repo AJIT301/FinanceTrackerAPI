@@ -1,18 +1,18 @@
 // src/auth/services/tokenService.js
 export const tokenService = {
     setToken: (token) => {
-        localStorage.setItem('token', token);
+        localStorage.setItem('authToken', token);
     },
 
     getToken: () => {
-        return localStorage.getItem('token');
+        return localStorage.getItem('authToken');
     },
 
     removeToken: () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
     },
 
     hasToken: () => {
-        return !!localStorage.getItem('token');
+        return !!localStorage.getItem('authToken');
     }
 };

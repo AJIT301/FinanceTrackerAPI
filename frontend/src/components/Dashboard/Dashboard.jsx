@@ -4,6 +4,7 @@ import { useAuth } from '../../auth/context/AuthContext';
 import { apiRequest } from '../../auth/services/authAPI';
 import styles from './Dashboard.module.scss';
 
+
 export default function Dashboard() {
     const { user } = useAuth();
     const [transactions, setTransactions] = useState([]);
@@ -28,9 +29,14 @@ export default function Dashboard() {
             setTransactions(transactionsData.transactions || []);
 
             // Fetch financial stats
-            const statsResponse = await apiRequest('/api/transactions/summary');
+            const statsResponse = await apiRequest('/api/dashboard/summary');
             const statsData = await statsResponse.json();
-            setStats(statsData);
+
+            setStats({
+                totalIncome: statsData.overall_summary.total_income || 0,
+                totalExpenses: statsData.overall_summary.total_expenses || 0,
+                balance: statsData.monthly_summary.balance || 0
+            });
 
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);

@@ -14,6 +14,8 @@ from app.core.config import settings
 from app.schemas.user import UserCreate, UserLogin, UserResponse, Token, TokenData
 from app.models.user import User
 from app.core.database import get_db
+from app.core.logger import logger
+
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -33,7 +35,7 @@ async def get_current_user(
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Could not validate credentia ls",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
@@ -80,6 +82,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
+    logger.info("Login attempt for email: %s", form_data.username)
     user = get_user_by_email(db, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -91,7 +94,9 @@ async def login(
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/me", response_model=UserResponse) # The response model ensures the output is a valid UserResponse
+
+@router.get(
+    "/me", response_model=UserResponse
+)  # The response model ensures the output is a valid UserResponse
 async def read_users_me(current_user: UserResponse = Depends(get_current_user)):
     return current_user
-

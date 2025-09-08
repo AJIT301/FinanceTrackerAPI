@@ -20,6 +20,7 @@ class UserLogin(BaseModel):
 
 class UserResponse(UserBase):
     id: int
+    public_id: str  # ← ADD THIS FIELD
     created_at: datetime
 
     class Config:

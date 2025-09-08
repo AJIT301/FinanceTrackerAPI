@@ -29,13 +29,13 @@ DATABASE_URL = get_database_url()
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,  # Check connection before using
-    echo=True,  # Set to False in production
+    echo=False,  # Set to False in production
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
-
+import app.models
 
 # Dependency to get DB session
 def get_db():

@@ -9,9 +9,10 @@ from app.core.database import get_db
 from app.api.auth import get_current_user
 from app.models.user import User
 from app.models.transaction import Transaction
+# from app.core.logger import logger
+
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
-
 
 @router.get("/summary")
 async def get_dashboard_summary(

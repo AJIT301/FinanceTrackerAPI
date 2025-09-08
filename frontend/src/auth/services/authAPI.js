@@ -1,9 +1,11 @@
 // src/auth/services/authAPI.js
+import { debugLog } from '../utils/debug';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+debugLog('Debug initialized');
 // Add this helper function
 export const apiRequest = async (endpoint, options = {}) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
@@ -35,7 +37,20 @@ export const authAPI = {
         });
 
         if (!response.ok) throw new Error('Login failed');
-        return response.json();
+        const data = await response.json();
+        debugLog('Full login response:', data);
+        debugLog('Access token:', data.access_token);
+        debugLog('Token type:', data.token_type);
+        debugLog('Expires in:', data.expires_in);
+        debugLog('Refresh token:', data.refresh_token);
+
+        if (data.access_token) {
+            localStorage.setItem('authToken', data.access_token);
+            debugLog('Token stored successfully!');
+        } else {
+            console.error('No access_token found in response!');
+        }
+        return data;
     },
 
     register: async (userData) => {

@@ -1,6 +1,8 @@
 # backend/app/core/security.py
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
+import bcrypt
+
 from passlib.context import CryptContext
 from typing import Optional
 
