@@ -4,16 +4,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.api.tracker.routes import router as tracker_router
+from app.api.dashboard import router as dashboard_router
 from app.core.config import settings
-
 from app.api.auth import router as auth_router
+
+
 # Test request model
 class TestRequest(BaseModel):
     test: str
 
+
 def create_app():
     # Create the FastAPI app instance
-    app = FastAPI(title="FinanceTracker API")
+    app = FastAPI(title="FinanceTracker API", version="1.0.0")
 
     # --- Middleware Configuration ---
     # Add CORS middleware with explicit configuration
@@ -27,8 +30,11 @@ def create_app():
     )
 
     # --- Routes / Endpoints ---
-        # Include routers
-    app.include_router(auth_router)  # Add this line
+    # Include routers
+    app.include_router(auth_router)
+    app.include_router(tracker_router)
+    app.include_router(dashboard_router)
+
     # Basic health check endpoint
     @app.get("/", tags=["Health"])
     async def root():
@@ -40,26 +46,24 @@ def create_app():
     @app.get("/api/health", tags=["Health"])
     async def health_check():
         return {"status": "healthy", "service": "LifeSync Finance API"}
-    
+
     # Test POST endpoint for CORS testing
     @app.post("/api/health", tags=["Health"])
     async def health_check_post(request: TestRequest):
         return {
-            "status": "healthy", 
+            "status": "healthy",
             "service": "LifeSync Finance API",
             "received": request.test,
-            "method": "POST"
+            "method": "POST",
         }
-    
+
     # Explicit OPTIONS handler for testing
     @app.options("/api/health", tags=["Health"])
     async def health_options():
         return {"message": "OPTIONS request successful"}
 
-    # Include your API routers
-    app.include_router(tracker_router)
-
     return app
+
 
 # This part is often handled by uvicorn command line, but can be useful for direct script execution
 app = create_app()
