@@ -7,6 +7,7 @@ from app.api.tracker.routes import router as tracker_router
 from app.api.dashboard import router as dashboard_router
 from app.core.config import settings
 from app.api.auth import router as auth_router
+from app.api.settings import router as settings_router
 
 
 # Test request model
@@ -34,7 +35,7 @@ def create_app():
     app.include_router(auth_router)
     app.include_router(tracker_router)
     app.include_router(dashboard_router)
-
+    app.include_router(settings_router, prefix="/api")   # ✅ register it here
     # Basic health check endpoint
     @app.get("/", tags=["Health"])
     async def root():

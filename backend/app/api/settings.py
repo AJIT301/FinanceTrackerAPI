@@ -11,11 +11,18 @@ router = APIRouter(prefix="/settings", tags=["Settings"])
 
 @router.get("/", response_model=UserSettingsOut)
 def get_settings(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    return (
-        db.query(UserSettings)
-        .filter(UserSettings.user_id == current_user.public_id)
-        .first()
-    )
+    """
+    Get the current user's settings.
+    Uses the internal integer ID of the user to match the DB.
+    """
+    settings = db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    if not settings:
+        # Optional: create default settings if they don't exist
+        settings = UserSettings(user_id=current_user.id)
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
+    return settings
 
 
 @router.patch("/", response_model=UserSettingsOut)
@@ -24,14 +31,16 @@ def update_settings(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    settings = (
-        db.query(UserSettings).filter(UserSettings.user_id == current_user.public_id).first()
-    )
+    """
+    Update the current user's settings.
+    Only updates fields provided in the request.
+    """
+    settings = db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
     if not settings:
-        settings = UserSettings(user_id=current_user.public_id)
+        settings = UserSettings(user_id=current_user.id)
         db.add(settings)
 
-    # Update only the provided fields
+    # Update only provided fields
     update_data = settings_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(settings, field, value)

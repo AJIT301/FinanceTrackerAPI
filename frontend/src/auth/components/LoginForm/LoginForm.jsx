@@ -1,13 +1,20 @@
 // src/auth/components/LoginForm/LoginForm.jsx
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { Navigate, useNavigate } from 'react-router-dom';
 import styles from './LoginForm.module.scss';
 
 export default function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login, loading } = useAuth();
+    const { login, loading, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    // Redirect if already authenticated
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +33,8 @@ export default function LoginForm() {
 
         try {
             await login({ email, password });
+            // Redirect after successful login
+            navigate('/dashboard', { replace: true });
         } catch (err) {
             setError(err.message || 'Login failed. Please check your credentials.');
         }

@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: Union[str, List[str]] = os.getenv(
         "ALLOWED_ORIGINS", "http://192.168.0.10:5173"
     )
-
+    
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
     def parse_allowed_origins(cls, v) -> List[str]:
@@ -82,6 +82,7 @@ class Settings(BaseSettings):
 # --- Global Settings Instance ---
 try:
     settings = Settings()  # type: ignore
+    print("Allowed origins:", settings.ALLOWED_ORIGINS)  # ✅ debug here
 except ValidationError as e:
     print("Error loading configuration from .env file:")
     for error in e.errors():
