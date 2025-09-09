@@ -1,0 +1,62 @@
+/* src/styles/main.scss */
+
+@import './variables';
+
+/* Basic Reset & Body Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Default to light theme */
+    background-color: var(--color-background-light);
+    color: var(--color-text-primary-light);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Apply dark theme when the body has the 'dark' class */
+body.dark {
+    background-color: var(--color-background-dark);
+    color: var(--color-text-primary-dark);
+}
+
+/* Global element styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+a {
+    color: var(--color-primary-light);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+body.dark a {
+    color: var(--color-primary-dark);
+}
+
+a:hover {
+    text-decoration: none;
+    
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
