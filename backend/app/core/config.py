@@ -2,10 +2,14 @@ from pydantic_settings import BaseSettings
 from pydantic import field_validator, ValidationError
 from typing import List, Union
 import os
+#dotnenv must be loaded before importing debugger. Nepamirstam.
 from dotenv import load_dotenv
+load_dotenv()
+
+from app.core.debugger import debugger
 
 # Load environment variables from .env file
-load_dotenv()
+
 
 
 class Settings(BaseSettings):
@@ -28,29 +32,50 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: Union[str, List[str]] = os.getenv(
         "ALLOWED_ORIGINS", "http://192.168.0.10:5173"
     )
-    
+
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
     def parse_allowed_origins(cls, v) -> List[str]:
-        """Convert comma-separated string to list of strings."""
+        """Convert comma-separated string or JSON-style array into list of strings."""
+        debugger.validator_input("ALLOWED_ORIGINS", v)
+
         if isinstance(v, list):
+            debugger.validator_result("ALLOWED_ORIGINS", v, "already list")
             return v
+
         if isinstance(v, str):
-            if not v.strip():  # Handle empty string
-                return ["http://192.168.0.10:5173"]  # Default fallback
-            # Handle both comma-separated and JSON array formats
             v = v.strip()
+
+            if not v:  # Handle empty string
+                fallback = ["http://192.168.0.10:5173"]
+                debugger.validator_result(
+                    "ALLOWED_ORIGINS", fallback, "empty string fallback"
+                )
+                return fallback
+
+            # Handle JSON array format
             if v.startswith("[") and v.endswith("]"):
-                # JSON array format
                 import json
 
+                v_json = v.replace("'", '"')  # always defined before try
                 try:
-                    return json.loads(v)
-                except json.JSONDecodeError:
-                    pass
-            # Comma-separated format
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
-        return ["http://192.168.0.10:5173"]  # Default fallback
+                    result = json.loads(v_json)
+                    debugger.json_parsing(v, v_json, True)
+                    debugger.validator_result("ALLOWED_ORIGINS", result, "JSON parsing")
+                    return result
+                except json.JSONDecodeError as e:
+                    debugger.json_parsing(v, v_json, False, error=e)
+
+            # Handle comma-separated string
+            result = [origin.strip() for origin in v.split(",") if origin.strip()]
+            debugger.validator_result(
+                "ALLOWED_ORIGINS", result, "comma-separated parsing"
+            )
+            return result
+
+        fallback = ["http://192.168.0.10:5173"]
+        debugger.validator_result("ALLOWED_ORIGINS", fallback, "default fallback")
+        return fallback
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
@@ -82,7 +107,7 @@ class Settings(BaseSettings):
 # --- Global Settings Instance ---
 try:
     settings = Settings()  # type: ignore
-    print("Allowed origins:", settings.ALLOWED_ORIGINS)  # ✅ debug here
+    debugger.settings_loaded(settings)
 except ValidationError as e:
     print("Error loading configuration from .env file:")
     for error in e.errors():
