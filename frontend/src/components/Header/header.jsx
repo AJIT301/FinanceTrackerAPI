@@ -1,49 +1,53 @@
+//src\components\Header\Header.jsx
 import { useState } from 'react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { Link } from 'react-router-dom';
-import styles from './Header.module.scss';
 
 export default function Header() {
     const { user, logout, isAuthenticated } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className={styles.header}>
-            <div className={styles.container}>
-                <div className={styles.brand}>
-                    <h2 className={styles.title}>FinanceTracker</h2>
-                    <span className={styles.subtitle}>API</span>
+        <header className="app-header">
+            <div className="header-container">
+                <div className="brand">
+                    <h2 className="brand-title">FinanceTracker</h2>
+                    <span className="brand-subtitle">API</span>
                 </div>
 
-                <nav className={styles.nav}>
+                <nav className="header-nav">
                     {isAuthenticated ? (
                         <>
-                            <Link to="/dashboard" className={styles.navLink}>Dashboard</Link>
-                            <Link to="/settings" className={styles.navLink}>Settings</Link>
-                            <span className={styles.userName}>Hi, {user?.full_name}</span>
-                            <button onClick={logout} className={styles.logoutBtn}>Logout</button>
+                            <Link to="/dashboard" className="btn btn-primary">Dashboard</Link>
+                            <Link to="/settings" className="btn btn-secondary">Settings</Link>
+                            <span className="btn btn-ghost" style={{ cursor: 'default' }}>
+                                Hi, {user?.full_name}
+                            </span>
+                            <button onClick={logout} className="btn btn-danger">Logout</button>
                         </>
                     ) : (
-                        <>
-                            <Link to="/login" className={styles.navLink}>Login</Link>
-                        </>
+                        <Link to="/login" className="btn btn-primary btn-lg">Login</Link>
                     )}
                 </nav>
 
-                <button className={styles.menuButton} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <button
+                    className="menu-button"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    aria-label="Toggle menu"
+                >
                     <span></span><span></span><span></span>
                 </button>
 
                 {isMenuOpen && (
-                    <div className={styles.mobileNav}>
+                    <div className="mobile-nav">
                         {isAuthenticated ? (
                             <>
-                                <Link to="/dashboard" className={styles.mobileNavLink}>Dashboard</Link>
-                                <Link to="/settings" className={styles.mobileNavLink}>Settings</Link>
-                                <button onClick={logout} className={styles.mobileLogoutBtn}>Logout</button>
+                                <Link to="/dashboard" className="btn btn-primary">Dashboard</Link>
+                                <Link to="/settings" className="btn btn-secondary">Settings</Link>
+                                <button onClick={logout} className="btn btn-danger">Logout</button>
                             </>
                         ) : (
-                            <Link to="/login" className={styles.mobileNavLink}>Login</Link>
+                            <Link to="/login" className="btn btn-primary btn-lg">Login</Link>
                         )}
                     </div>
                 )}

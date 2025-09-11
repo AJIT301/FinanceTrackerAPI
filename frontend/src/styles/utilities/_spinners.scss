@@ -1,0 +1,24 @@
+// LOADING / SPINNER
+// src\styles\utilities\_spinners.scss
+
+.spinner,
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-text);
+    /* ← Use main text color for loading */
+    font-size: 1.2rem;
+}
+
+.spinner {
+    height: 200px;
+    /* ← Only spinner gets fixed height */
+}
+
+.loading {
+    min-height: 100vh;
+    /* ← Full viewport for route loading */
+    background: var(--color-bg);
+    /* ← Prevents white flash */
+}

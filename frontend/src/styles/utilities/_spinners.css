@@ -1,0 +1,1 @@
+.spinner,.loading{display:flex;justify-content:center;align-items:center;color:var(--color-text);font-size:1.2rem}.spinner{height:200px}.loading{min-height:100vh;background:var(--color-bg)}

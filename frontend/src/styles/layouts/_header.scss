@@ -1,0 +1,87 @@
+.app-header {
+    background: var(--color-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
+}
+
+
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.brand-subtitle {
+    font-size: 0.875rem;
+    color: var(--color-ghost-text);
+    background: var(--color-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+}
+
+.menu-button {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+
+    span {
+        display: block;
+        width: 24px;
+        height: 3px;
+        background: var(--color-text);
+        border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+        display: flex;
+    }
+}
+
+.mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+
+    @media (min-width: 769px) {
+        display: none;
+    }
+}

@@ -1,8 +1,6 @@
-// src/pages/Settings.jsx
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '../auth/context/AuthContext';
 import { apiRequest } from '../auth/services/authAPI';
-import styles from './Settings.module.scss';
 
 export default function Settings() {
     const { user } = useAuth();
@@ -10,20 +8,17 @@ export default function Settings() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // Apply theme class to the body element
     const applyTheme = useCallback((selectedTheme) => {
         document.body.classList.remove('light', 'dark');
         document.body.classList.add(selectedTheme);
     }, []);
 
     useEffect(() => {
-        // Set initial loading to true only when fetching
         setLoading(true);
 
         const fetchSettings = async () => {
             try {
                 setError(null);
-
                 const response = await apiRequest('/api/settings');
                 const data = await response.json();
 
@@ -32,7 +27,7 @@ export default function Settings() {
             } catch (err) {
                 console.error('Failed to fetch settings:', err);
                 setError('Failed to load settings');
-                setTheme('light'); // Fallback theme
+                setTheme('light');
                 applyTheme('light');
             } finally {
                 setLoading(false);
@@ -47,52 +42,51 @@ export default function Settings() {
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
         try {
-            setError(null);
             setTheme(newTheme);
             applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
 
             await apiRequest('/api/settings', {
                 method: 'PATCH',
                 body: JSON.stringify({ theme: newTheme })
             });
         } catch (err) {
-            // Revert on failure
-            console.error('Failed to update theme:', err);
             setTheme(currentTheme);
             applyTheme(currentTheme);
+            localStorage.setItem('theme', currentTheme);
             setError('Failed to update theme');
         }
     };
 
     if (loading) {
         return (
-            <div className={styles.loading}>
+            <div className="loading">
                 <p>Loading settings...</p>
             </div>
         );
     }
 
     return (
-        <div className={styles.settingsContainer}>
-            <h1 className={styles.title}>Settings</h1>
+        <div className="settings-container">
+            <h1 className="settings-title">Settings</h1>
 
-            {error && <div className={styles.error}>{error}</div>}
+            {error && <div className="alert alert-danger">{error}</div>}
 
-            <div className={styles.section}>
-                <h2 className={styles.sectionTitle}>User Information</h2>
-                <div className={styles.userInfo}>
+            <div className="settings-section">
+                <h2 className="section-title">User Information</h2>
+                <div className="user-info">
                     <p><strong>Name:</strong> {user?.full_name || 'Loading...'}</p>
                     <p><strong>Email:</strong> {user?.email || 'Loading...'}</p>
                 </div>
             </div>
 
-            <div className={styles.section}>
-                <h2 className={styles.sectionTitle}>Appearance</h2>
-                <div className={styles.themeControl}>
+            <div className="settings-section">
+                <h2 className="section-title">Appearance</h2>
+                <div className="theme-control">
                     <span>Current theme: <strong>{theme}</strong></span>
                     <button
                         onClick={handleThemeChange}
-                        className={styles.themeButton}
+                        className="btn btn-secondary"
                     >
                         Switch to {theme === 'light' ? 'dark' : 'light'}
                     </button>

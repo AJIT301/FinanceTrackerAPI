@@ -10,24 +10,40 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const initAuth = async () => {
-            try {
-                const token = tokenService.getToken();
-                if (token) {
-                    const userData = await authAPI.getCurrentUser();
-                    setUser(userData);
-                }
-            } catch (error) {
-                console.error('Auth initialization error:', error);
-                tokenService.removeToken();
-                setError('Session expired. Please login again.');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const initAuthAndSyncTheme = async () => {
+        try {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                const userData = await authAPI.getCurrentUser();
+                setUser(userData);
+                setIsAuthenticated(true);
 
-        initAuth();
-    }, []);
+                // ✅ Sync theme AFTER user is authenticated
+                try {
+                    const response = await authAPI.getSettings(); // ← You need this API method
+                    const data = await response.json();
+                    const backendTheme = data.theme || 'light';
+
+                    if (backendTheme !== localStorage.getItem('theme')) {
+                        localStorage.setItem('theme', backendTheme);
+                        document.body.className = backendTheme;
+                    }
+                } catch (err) {
+                    console.warn('Failed to sync theme with backend');
+                }
+            }
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            localStorage.removeItem('authToken');
+            setUser(null);
+            setIsAuthenticated(false);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    initAuthAndSyncTheme();
+}, []);
 
     const login = async (credentials) => {
         try {

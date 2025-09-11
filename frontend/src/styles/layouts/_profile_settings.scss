@@ -1,0 +1,53 @@
+.settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.settings-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--color-text);
+}
+
+.settings-section {
+    background: var(--color-secondary);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--color-secondary-border);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--color-secondary-text);
+}
+
+.user-info {
+    p {
+        margin-bottom: 0.5rem;
+        color: var(--color-ghost-text);
+    }
+
+    strong {
+        color: var(--color-text);
+    }
+}
+
+.theme-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    span {
+        color: var(--color-ghost-text);
+    }
+
+    strong {
+        color: var(--color-text);
+        text-transform: capitalize;
+    }
+}

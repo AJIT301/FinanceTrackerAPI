@@ -1,0 +1,109 @@
+// src/styles/components/_buttons.scss
+// SIMPLE button system using CSS variables for easy theming
+
+// ================================
+// BASE BUTTON (applies to ALL buttons)
+// ================================
+.btn {
+    padding: var(--btn-padding, 0.5rem 1rem); // Default padding
+    border: none;
+    border-radius: var(--btn-radius, 99px); // Default border-radius
+    cursor: pointer;
+    font-size: var(--btn-font-size, 1rem); // Default font-size
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;      /* ✅ Forces centering */
+    align-items: center;       /* ✅ Vertical center */
+    justify-content: center;   /* ✅ Horizontal center */
+    white-space: nowrap;       /* ✅ Prevents "Hi, Test User" from wrapping */
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// ================================
+// BUTTON TYPES (just 4 types)
+// ================================
+
+// Primary button (main actions)
+.btn-primary {
+    background: var(--btn-primary-bg, #3b82f6);
+    color: var(--btn-primary-color, #fff);
+
+    &:hover:not(:disabled) {
+        background: var(--btn-primary-hover, #2563eb);
+    }
+}
+
+// Secondary button (less important actions)
+.btn-secondary {
+    background: var(--btn-secondary-bg, #f3f4f6);
+    color: var(--btn-secondary-color, #374151);
+    border: 1px solid var(--btn-secondary-border, #d1d5db);
+
+    &:hover:not(:disabled) {
+        background: var(--btn-secondary-hover, #e5e7eb);
+    }
+}
+
+// Danger button (delete, logout, etc.)
+.btn-danger {
+    background: var(--btn-danger-bg, #ef4444);
+    color: var(--btn-danger-color, #fff);
+
+    &:hover:not(:disabled) {
+        background: var(--btn-danger-hover, #dc2626);
+    }
+}
+
+// Ghost button (minimal, nav items)
+.btn-ghost {
+    background: transparent;
+    color: var(--btn-ghost-color, #6b7280);
+
+    &:hover:not(:disabled) {
+        background: var(--btn-ghost-hover-bg, #f3f4f6);
+        color: var(--btn-ghost-hover-color, #374151);
+    }
+}
+
+// ================================
+// BUTTON SIZES (just 3 sizes)
+// ================================
+.btn-sm {
+    padding: var(--btn-sm-padding, 0.25rem 0.75rem);
+    font-size: var(--btn-sm-font-size, 0.875rem);
+}
+
+.btn-lg {
+    padding: var(--btn-lg-padding, 0.5rem 2rem); // ← Wider horizontal padding
+    font-size: var(--btn-lg-font-size, 1.125rem);
+}
+
+// ================================
+// DARK THEME (automatic)
+// ================================
+body.dark {
+
+    /* Secondary button dark overrides */
+    .btn-secondary {
+        background: var(--btn-secondary-bg-dark, #374151);
+        color: var(--btn-secondary-color-dark, #e5e7eb);
+        border-color: var(--btn-secondary-border-dark, #4b5563);
+
+        &:hover:not(:disabled) {
+            background: var(--btn-secondary-hover-dark, #4b5563);
+        }
+    }
+
+    /* Ghost button dark overrides */
+    .btn-ghost {
+        color: var(--btn-ghost-color-dark, #9ca3af);
+
+        &:hover:not(:disabled) {
+            background: var(--btn-ghost-hover-bg-dark, #374151);
+            color: var(--btn-ghost-hover-color-dark, #e5e7eb);
+        }
+    }
+}

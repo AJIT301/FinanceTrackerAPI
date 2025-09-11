@@ -4,7 +4,7 @@ import Header from './components/Header/Header';
 import LoginForm from './auth/components/LoginForm/LoginForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import Settings from './pages/Settings';
-import './styles/App.scss'; // <-- keep global styles
+
 
 // Protect routes without touching CSS
 function ProtectedRoute({ children }) {
