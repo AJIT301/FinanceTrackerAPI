@@ -4,27 +4,30 @@ import { AuthProvider } from './auth/context/AuthContext.jsx';
 import App from './App.jsx';
 import './main.scss';
 
-// Enhanced theme setting to prevent FOUC
+// COMPREHENSIVE theme setting to prevent ANY flicker
 function setInitialTheme() {
-  const savedTheme = localStorage.getItem('theme');
-  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  const isDark = savedTheme === 'dark';
 
-  // Set on both html and body for maximum coverage
-  document.documentElement.className = theme;
-  document.body.className = theme;
+  // Set the background colors immediately on html AND body
+  const lightBg = '#ffffff';
+  const darkBg = '#324775';
+  const bgColor = isDark ? darkBg : lightBg;
 
-  // Set CSS custom property as backup
-  document.documentElement.style.setProperty('--initial-theme', theme);
+  // Apply to html element (this prevents the flicker you're seeing)
+  document.documentElement.style.backgroundColor = bgColor;
+  document.documentElement.className = savedTheme;
 
-  // Ensure body is visible
+  // Apply to body
+  document.body.style.backgroundColor = bgColor;
+  document.body.className = savedTheme;
   document.body.style.visibility = 'visible';
 
-  return theme;
+  console.log('Theme set to:', savedTheme, 'with bg:', bgColor);
 }
 
-// Set theme immediately
-const currentTheme = setInitialTheme();
+// Execute IMMEDIATELY - before React renders
+setInitialTheme();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
