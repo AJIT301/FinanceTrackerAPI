@@ -42,8 +42,9 @@ export default function LoginForm() {
                 <p>Sign in to manage your finances</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="auth-form">
-                {error && <div className="alert alert-danger">{error}</div>}
+            <form onSubmit={handleSubmit} className="auth-form"> {
+                error && <div className="alert alert-danger">{error}</div>
+            }
 
                 <div className="input-group">
                     <label htmlFor="email">Email Address</label>
@@ -56,6 +57,7 @@ export default function LoginForm() {
                         required
                         disabled={loading}
                         className="input-field"
+                        autoComplete="on"
                     />
                 </div>
 
@@ -79,7 +81,10 @@ export default function LoginForm() {
                     className="btn btn-primary btn-lg"
                 >
                     {loading ? (
-                        <>Logging in<span className="loading-dots">...</span></>
+                        <>
+                            <span className="spinner-inline"></span>
+                            Loading<span className="loading-dots"></span>
+                        </>
                     ) : (
                         'Sign In'
                     )}

@@ -1,5 +1,5 @@
 // LOADING / SPINNER
-// src\styles\utilities\_spinners.scss
+// src/styles/utilities/_spinners.scss
 
 .spinner,
 .loading {
@@ -7,18 +7,73 @@
     justify-content: center;
     align-items: center;
     color: var(--color-text);
-    /* ← Use main text color for loading */
     font-size: 1.2rem;
 }
 
 .spinner {
     height: 200px;
-    /* ← Only spinner gets fixed height */
 }
 
 .loading {
     min-height: 100vh;
-    /* ← Full viewport for route loading */
     background: var(--color-bg);
-    /* ← Prevents white flash */
+}
+
+// ADD CIRCLE SPINNER STYLES
+.spinner-circle {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// Optional: Add different sizes if needed
+.spinner-circle-sm {
+    width: 30px;
+    height: 30px;
+    border-width: 2px;
+}
+
+.spinner-circle-lg {
+    width: 70px;
+    height: 70px;
+    border-width: 4px;
+}
+
+// Small inline spinner for buttons
+.spinner-inline {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+    0% { content: '.'; }
+    25% { content: '..'; }
+    50% { content: '...'; }
+    75% { content: ''; }
+    100% { content: '.'; }
 }

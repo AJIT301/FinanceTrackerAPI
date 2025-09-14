@@ -10,7 +10,11 @@ import Settings from './pages/Settings';
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;      // show loading while auth state is unknown
+  if (loading) return (
+    <div className="loading">
+      <div className="spinner-circle"></div>
+    </div>
+  );        // show loading while auth state is unknown
   if (!isAuthenticated) return <Navigate to="/login" />; // redirect if not logged in
   return children;                                 // render children if authenticated
 }

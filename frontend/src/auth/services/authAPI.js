@@ -60,6 +60,20 @@ export const authAPI = {
     getCurrentUser: async () => {
         const response = await apiRequest('/auth/me');
         return response.json();
+    },
+
+    // ADD THESE NEW METHODS FOR THEME MANAGEMENT
+    getUserSettings: async () => {
+        const response = await apiRequest('/api/settings');
+        return response.json();
+    },
+
+    updateUserSettings: async (settings) => {
+        const response = await apiRequest('/api/settings', {
+            method: 'PATCH',
+            body: JSON.stringify(settings)
+        });
+        return response.json();
     }
 };
 
