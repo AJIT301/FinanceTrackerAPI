@@ -1,0 +1,40 @@
+/* Password input container */
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field {
+    padding-right: 70px;
+    /* More space for both browser icons and your button */
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 5px;
+    /* Closer to the edge */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #007bff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    height: calc(100% - 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    /* High z-index to stay visible */
+    background-color: white;
+    /* White background to cover browser icons if needed */
+    border-radius: 3px;
+
+    &:hover {
+        color: #0056b3;
+        background-color: #f8f9fa;
+    }
+}

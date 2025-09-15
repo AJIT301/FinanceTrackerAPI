@@ -1,7 +1,15 @@
 import { debugLog } from '../utils/debug';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-debugLog('Debug initialized');
+// Get API base URL with fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://192.168.0.10:5000/api';
+
+// console.log('Environment variables:', import.meta.env);
+// console.log('API_BASE_URL:', API_BASE_URL);
+
+// Check if API_BASE_URL is still undefined
+if (!API_BASE_URL || API_BASE_URL === 'undefined') {
+    console.error('⚠️ VITE_API_BASE_URL is not set! Please check your .env file');
+}
 
 export const apiRequest = async (endpoint, options = {}) => {
     const token = localStorage.getItem('authToken');
@@ -9,14 +17,15 @@ export const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers: {
-            'Authorization': `Bearer ${token}`,
+            ...(token && { 'Authorization': `Bearer ${token}` }),
             'Content-Type': 'application/json',
             ...options.headers
         }
     });
 
     if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`API error: ${response.status} - ${errorText}`);
     }
 
     return response;
@@ -25,55 +34,87 @@ export const apiRequest = async (endpoint, options = {}) => {
 // Auth API object
 export const authAPI = {
     login: async (credentials) => {
-        const formData = new URLSearchParams();
-        formData.append('username', credentials.email);
-        formData.append('password', credentials.password);
+        try {
+            const formData = new URLSearchParams();
+            formData.append('username', credentials.email);
+            formData.append('password', credentials.password);
 
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
-        });
+            debugLog('Attempting login to:', `${API_BASE_URL}/auth/login`);
 
-        if (!response.ok) throw new Error('Login failed');
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
 
-        const data = await response.json();
-        if (data.access_token) {
-            localStorage.setItem('authToken', data.access_token);
-            debugLog('Token stored successfully!');
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Login failed: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            if (data.access_token) {
+                localStorage.setItem('authToken', data.access_token);
+                debugLog('Token stored successfully!');
+            }
+
+            return data;
+        } catch (error) {
+            debugLog('Login error:', error);
+            throw error;
         }
-
-        return data;
     },
 
     register: async (userData) => {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userData)
+            });
 
-        if (!response.ok) throw new Error('Registration failed');
-        return response.json();
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Registration failed: ${response.status} - ${errorText}`);
+            }
+            return response.json();
+        } catch (error) {
+            debugLog('Registration error:', error);
+            throw error;
+        }
     },
 
     getCurrentUser: async () => {
-        const response = await apiRequest('/auth/me');
-        return response.json();
+        try {
+            const response = await apiRequest('/auth/me');
+            return response.json();
+        } catch (error) {
+            debugLog('Get current user error:', error);
+            throw error;
+        }
     },
 
-    // ADD THESE NEW METHODS FOR THEME MANAGEMENT
     getUserSettings: async () => {
-        const response = await apiRequest('/api/settings');
-        return response.json();
+        try {
+            const response = await apiRequest('/api/settings');
+            return response.json();
+        } catch (error) {
+            debugLog('Get user settings error:', error);
+            throw error;
+        }
     },
 
     updateUserSettings: async (settings) => {
-        const response = await apiRequest('/api/settings', {
-            method: 'PATCH',
-            body: JSON.stringify(settings)
-        });
-        return response.json();
+        try {
+            const response = await apiRequest('/api/settings', {
+                method: 'PATCH',
+                body: JSON.stringify(settings)
+            });
+            return response.json();
+        } catch (error) {
+            debugLog('Update user settings error:', error);
+            throw error;
+        }
     }
 };
 

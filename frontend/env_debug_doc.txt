@@ -1,0 +1,69 @@
+VITE_DEBUG=true|false          # Enable/disable debugging system
+VITE_DEBUG_NAMESPACES=         # Comma-separated list of namespaces to debug
+
+
+# All authentication-related debugging
+auth:*
+
+# Specific auth modules
+auth:provider                  # AuthProvider component
+auth:login                     # Login flow
+auth:register                  # Registration flow
+auth:logout                    # Logout flow
+
+# All API-related debugging
+api:*
+
+# Specific API modules
+api:auth                       # Authentication API calls
+api:transactions              # Transactions API calls
+api:users                     # Users API calls
+api:settings                  # Settings API calls
+
+#####
+
+# All components
+components:*
+
+# Auth components
+components:auth:*
+components:auth:login          # Login form component
+components:auth:register       # Register form component
+
+# Dashboard components
+components:dashboard:*
+components:dashboard:overview  # Dashboard overview
+components:dashboard:transactions  # Transactions component
+
+# UI components
+components:ui:*
+components:ui:header           # Header component
+components:ui:navbar           # Navbar component
+
+
+##### All custom hooks
+hooks:*
+
+# Specific hooks
+hooks:auth:*
+hooks:auth:useLogin           # useLogin hook
+hooks:auth:useRegister        # useRegister hook
+hooks:theme                   # useTheme hook
+hooks:api:*
+hooks:api:useTransactions     # useTransactions hook
+
+
+
+# All utilities
+utils:*
+
+# Specific utilities
+utils:theme                   # Theme utilities
+utils:storage                 # Storage utilities
+utils:token                   # Token utilities
+
+
+
+# Application initialization
+app:init                      # Main application initialization
+app:routing                   # Routing-related debugging
