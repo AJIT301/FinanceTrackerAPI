@@ -11,14 +11,14 @@ router = APIRouter(prefix="/settings", tags=["Settings"])
 
 @router.get("/", response_model=UserSettingsOut)
 def get_settings(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    """
-    Get the current user's settings.
-    Uses the internal integer ID of the user to match the DB.
-    """
-    settings = db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    settings = (
+        db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    )
+
     if not settings:
-        # Optional: create default settings if they don't exist
-        settings = UserSettings(user_id=current_user.id)
+        settings = UserSettings(
+            user_id=current_user.id, theme="light", currency_code="USD"  # ← Use .id
+        )
         db.add(settings)
         db.commit()
         db.refresh(settings)
@@ -35,15 +35,49 @@ def update_settings(
     Update the current user's settings.
     Only updates fields provided in the request.
     """
-    settings = db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    # FIXED: Changed from current_user.public_id to current_user.id
+    settings = (
+        db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    )
     if not settings:
-        settings = UserSettings(user_id=current_user.id)
+        # FIXED: Changed from current_user.public_id to current_user.id
+        settings = UserSettings(
+            user_id=current_user.id, theme="light", currency_code="USD"
+        )
         db.add(settings)
 
     # Update only provided fields
     update_data = settings_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(settings, field, value)
+
+    db.commit()
+    db.refresh(settings)
+    return settings
+
+
+@router.patch("/currency", response_model=UserSettingsOut)
+def update_currency(
+    currency_code: str,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    """
+    Update only the currency setting.
+    """
+    # FIXED: Changed from current_user.public_id to current_user.id
+    settings = (
+        db.query(UserSettings).filter(UserSettings.user_id == current_user.id).first()
+    )
+    if not settings:
+        # FIXED: Changed from current_user.public_id to current_user.id
+        settings = UserSettings(
+            user_id=current_user.id, theme="light", currency_code=currency_code
+        )
+        db.add(settings)
+    else:
+        settings.currency_code = currency_code
+        db.add(settings)
 
     db.commit()
     db.refresh(settings)

@@ -1,5 +1,10 @@
 🚀 Alembic Migration Cheat Sheet
 🔧 Basic Commands
+
+alembic downgrade -1  //return 1 step back.
+alembic upgrade head //run migration once more after editing
+
+
 bash
 # Initialize Alembic (first time setup)
 alembic init alembic

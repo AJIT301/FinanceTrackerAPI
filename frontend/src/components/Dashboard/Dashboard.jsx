@@ -1,11 +1,15 @@
+// DASHBOARD.jsx
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/context/AuthContext';
 import { apiRequest } from '../../auth/services/authAPI';
+import AddTransactionModal from '../Transaction/AddTransaction';
+import { CurrencyDisplay } from '../Currency/CurrencyDisplay'; // ← ADD THIS IMPORT
 
 export default function Dashboard() {
     const { user } = useAuth();
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [stats, setStats] = useState({
         totalIncome: 0,
         totalExpenses: 0,
@@ -39,6 +43,11 @@ export default function Dashboard() {
         }
     };
 
+    const handleTransactionAdded = (newTransaction) => {
+        setTransactions(prev => [newTransaction, ...prev]);
+        fetchDashboardData();
+    };
+
     if (loading) {
         return (
             <div className="dashboard-loading">
@@ -58,19 +67,25 @@ export default function Dashboard() {
             <div className="summary-grid">
                 <div className="summary-card income">
                     <h3>Income</h3>
-                    <div className="amount">${stats.totalIncome.toFixed(2)}</div>
+                    <div className="amount">
+                        <CurrencyDisplay amount={stats.totalIncome} /> {/* ← USE CURRENCY DISPLAY */}
+                    </div>
                     <p>This month</p>
                 </div>
 
                 <div className="summary-card expenses">
                     <h3>Expenses</h3>
-                    <div className="amount">${stats.totalExpenses.toFixed(2)}</div>
+                    <div className="amount">
+                        <CurrencyDisplay amount={stats.totalExpenses} /> {/* ← USE CURRENCY DISPLAY */}
+                    </div>
                     <p>This month</p>
                 </div>
 
                 <div className="summary-card balance">
                     <h3>Balance</h3>
-                    <div className="amount">${stats.balance.toFixed(2)}</div>
+                    <div className="amount">
+                        <CurrencyDisplay amount={stats.balance} /> {/* ← USE CURRENCY DISPLAY */}
+                    </div>
                     <p>Current</p>
                 </div>
             </div>
@@ -90,7 +105,8 @@ export default function Dashboard() {
                                     <span className="description">{transaction.description}</span>
                                 </div>
                                 <div className={`amount ${transaction.type === 'income' ? 'income' : 'expense'}`}>
-                                    {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                                    {transaction.type === 'income' ? '+' : '-'}
+                                    <CurrencyDisplay amount={transaction.amount} /> {/* ← USE CURRENCY DISPLAY */}
                                 </div>
                             </div>
                         ))}
@@ -98,7 +114,12 @@ export default function Dashboard() {
                 ) : (
                     <div className="empty-state">
                         <p>No transactions yet</p>
-                        <button className="btn btn-primary">Add Your First Transaction</button>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => setIsModalOpen(true)}
+                        >
+                            Add Your First Transaction
+                        </button>
                     </div>
                 )}
             </div>
@@ -106,7 +127,10 @@ export default function Dashboard() {
             <div className="quick-actions">
                 <h2>Quick Actions</h2>
                 <div className="action-buttons">
-                    <button className="btn btn-primary">
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => setIsModalOpen(true)}
+                    >
                         <span>➕</span> Add Transaction
                     </button>
                     <button className="btn btn-secondary">
@@ -117,6 +141,12 @@ export default function Dashboard() {
                     </button>
                 </div>
             </div>
+
+            <AddTransactionModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onTransactionAdded={handleTransactionAdded}
+            />
         </div>
     );
 }

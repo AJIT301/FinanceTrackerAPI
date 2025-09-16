@@ -4,6 +4,7 @@ from typing import Optional, Dict, Any
 
 class UserSettingsBase(BaseModel):
     theme: str = "light"
+    currency_code: Optional[str] = "USD"  # ← ADD THIS
     extras: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 class UserSettingsUpdate(UserSettingsBase):

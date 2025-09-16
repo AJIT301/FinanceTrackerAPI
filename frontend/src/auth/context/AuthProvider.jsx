@@ -1,3 +1,4 @@
+// src/auth/context/AuthProvider.jsx
 import { useState, useEffect } from 'react';
 import { AuthContext } from './AuthContext';
 import { authAPI } from '../services/authAPI';
@@ -12,10 +13,57 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [settings, setSettings] = useState(null); // ← ADD THIS
 
     // Use the theme hook
     const { theme, setTheme, applyTheme, fetchUserTheme, updateTheme } = useTheme();
     debug.log('AuthProvider initialized with theme hook');
+
+    // Fetch user settings
+    const fetchUserSettings = async () => {
+        try {
+            debug.log('Fetching user settings');
+            const response = await authAPI.getCurrentUser(); // Or create a specific settings API call
+            // For now, we'll fetch settings separately
+            const settingsResponse = await fetch('/api/settings/');
+            if (settingsResponse.ok) {
+                const settingsData = await settingsResponse.json();
+                setSettings(settingsData);
+                debug.log('User settings fetched', { settings: settingsData });
+                return settingsData;
+            }
+        } catch (error) {
+            debug.error('Failed to fetch user settings', { error: error.message });
+        }
+        return null;
+    };
+
+    // Update currency
+    const updateCurrency = async (currencyCode) => {
+        try {
+            debug.log('Updating currency', { currencyCode });
+            const response = await fetch('/api/settings/', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                },
+                body: JSON.stringify({ currency_code: currencyCode })
+            });
+            
+            if (response.ok) {
+                const updatedSettings = await response.json();
+                setSettings(updatedSettings);
+                debug.log('Currency updated successfully', { settings: updatedSettings });
+                return updatedSettings;
+            } else {
+                throw new Error('Failed to update currency');
+            }
+        } catch (error) {
+            debug.error('Failed to update currency', { error: error.message });
+            throw error;
+        }
+    };
 
     // Initialize auth and theme
     useEffect(() => {
@@ -38,6 +86,9 @@ export const AuthProvider = ({ children }) => {
 
                     setUser(userData);
                     setIsAuthenticated(true);
+
+                    // Fetch user settings including currency
+                    await fetchUserSettings();
 
                     const userTheme = localStorage.getItem(`theme_${userData.public_id}`);
                     debug.log('Checking localStorage for user theme', {
@@ -99,7 +150,10 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             setIsAuthenticated(true);
 
+            // Fetch user settings after login
+            await fetchUserSettings();
             await fetchUserTheme(userData.public_id);
+            
             debug.log('Login process completed successfully', { 
                 duration: `${Date.now() - startTime}ms` 
             });
@@ -136,6 +190,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setError(null);
         setTheme('light');
+        setSettings(null); // ← CLEAR SETTINGS
 
         debug.log('Logout completed');
     };
@@ -162,9 +217,11 @@ export const AuthProvider = ({ children }) => {
         loading,
         error,
         theme,
+        settings, // ← ADD THIS
         login,
         logout,
         updateTheme: handleUpdateTheme,
+        updateCurrency, // ← ADD THIS
         setError
     };
 
